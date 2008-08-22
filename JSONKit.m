@@ -90,7 +90,7 @@ void appendArrayElementToData(CFTypeRef element, DataAndFlag* dataAndFlag)
 void appendKeyValuePairToData(CFTypeRef key, CFTypeRef value, DataAndFlag* dataAndFlag)
 {
     if (CFGetTypeID(key) != CFStringGetTypeID()) {
-        [NSException raise:@"" format:@""];
+        [NSException raise:NSInvalidArgumentException format:@"The keys of a dictionary must be strings."];
     }
     appendStringToData(key, dataAndFlag->data);
     CFDataAppendBytes(dataAndFlag->data, (uint8_t*)&":", 1);
@@ -144,7 +144,7 @@ void appendObjectToData(CFTypeRef object, CFMutableDataRef data)
     } else if (CFStringGetTypeID() == type) {
         appendStringToData(object, data);
     } else {
-        [NSException raise:@"" format:@""];
+        [NSException raise:NSInvalidArgumentException format:@"Unsupported object-type encountered (%@).  Supported types are: NSArray, NSDictionary, NSNumber, NSNull and NSString.", [(id)CFCopyTypeIDDescription(type) autorelease]];
     }
 }
 
