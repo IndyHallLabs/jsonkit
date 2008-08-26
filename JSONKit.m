@@ -81,10 +81,10 @@ void appendStringToData(CFTypeRef string, CFMutableDataRef data)
 
 void appendArrayElementToData(CFTypeRef element, DataAndFlag* dataAndFlag)
 {
-    if (dataAndFlag->flag++ > 1) {
+    appendObjectToData(element, dataAndFlag->data);
+    if (--dataAndFlag->flag > 0) {
         CFDataAppendBytes(dataAndFlag->data, (uint8_t*)&",", 1);
     }
-    appendObjectToData(element, dataAndFlag->data);
 }
 
 void appendKeyValuePairToData(CFTypeRef key, CFTypeRef value, DataAndFlag* dataAndFlag)
