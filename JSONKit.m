@@ -46,10 +46,7 @@ void appendStringToData(CFTypeRef string, CFMutableDataRef data)
     int i;
     for (i = 0; i < count; i++) {
         UniChar c = CFStringGetCharacterAtIndex(string, i);
-        if (c > 0x1F && c < 0x7F) {
-            uint8_t byte = c & 0xFF;
-            CFDataAppendBytes(data, &byte, 1);
-        } else if ('\"' == c) {
+        if ('\"' == c) {
             CFDataAppendBytes(data, (uint8_t*)&"\\\"", 2);
         } else if ('/' == c) {
             CFDataAppendBytes(data, (uint8_t*)&"\\/", 2);
@@ -61,8 +58,11 @@ void appendStringToData(CFTypeRef string, CFMutableDataRef data)
             CFDataAppendBytes(data, (uint8_t*)&"\\n", 2);
         } else if ('\r' == c) {
             CFDataAppendBytes(data, (uint8_t*)&"\\r", 2);
-        } else if ('\t') {
+        } else if ('\t' == c) {
             CFDataAppendBytes(data, (uint8_t*)&"\\t", 2);
+        } else if (c > 0x1F && c < 0x7F) {
+            uint8_t byte = c & 0xFF;
+            CFDataAppendBytes(data, &byte, 1);
         } else {
             const static uint8_t HEX_CHARS[] = "0123456789abcdef";
             uint8_t buffer[0x06];
