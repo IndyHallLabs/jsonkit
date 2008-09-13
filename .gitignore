@@ -1,2 +1,4 @@
 [bB]uild
 ._DS_Store
+*.pbxuser
+*.perspectivev3
