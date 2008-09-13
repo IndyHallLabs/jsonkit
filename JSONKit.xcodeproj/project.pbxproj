@@ -188,7 +188,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_NAME = JSONKit;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				WRAPPER_EXTENSION = framework;
@@ -208,7 +208,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_NAME = JSONKit;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				WRAPPER_EXTENSION = framework;
