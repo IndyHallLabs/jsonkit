@@ -1,0 +1,30 @@
+INTRODUCTION
+
+Hello and thanks for checking out JSONKit.
+
+JSONKit was originally part of RipIt, the simplest DVD ripper available for the 
+Macintosh, and is now available to the public.
+
+JSON is a simple, text-based data exchange format that's pretty easy for humans
+to read.  You can get all of the details here: http://json.org
+
+
+LEGAL
+
+DVDKit is copyrighted open-source software that is released under the BSD 
+License.  For details on the license, see the LICENSE file.
+
+
+SYSTEM REQUIREMENTS
+
+On Macintosh systems, JSONKit has been extensively tested on Mac OS X version 
+10.5 and greater, though there should be no major obstacles to compiling and
+running JSONKit on older versions of Mac OS X, or on the iPhone/iPod.
+
+
+AUTHOR
+
+Jason Allum (jallum@gmail.com)
+RipItApp.com
+Philadelphia, PA, USA
+http://ripitapp.com
