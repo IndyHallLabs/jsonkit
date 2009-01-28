@@ -314,7 +314,11 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
             }
             *jsonIndex = i;
-            object && (*object = string);
+            if (object) {
+                *object = string;
+            } else {
+                CFRelease(string);
+            }
             return T_STRING;
         }
                 
@@ -330,7 +334,7 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                     [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
                 }
             }
-            int l = neg ? -digit : digit;
+            long l = neg ? -digit : digit;
             digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
             while (digit >= 0 && digit <= 9) {
                 l = l * 10 + digit;
@@ -366,9 +370,9 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                     }
                     d = d * pow(10, eneg ? -e : e);
                 }
-                object && (*object = (id)CFNumberCreate(NULL, kCFNumberDoubleType , &d));
+                object && (*object = CFNumberCreate(NULL, kCFNumberDoubleType , &d));
             } else {
-                object && (*object = (id)CFNumberCreate(NULL, kCFNumberLongType , &l));
+                object && (*object = CFNumberCreate(NULL, kCFNumberLongType , &l));
             }
             *jsonIndex = i - 1;
             return T_NUMBER;
