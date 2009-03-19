@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		F9C088110F72975D00675A9C /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F9C2AC2A0E7B620900474D97 /* JSONKit.m */; };
+		F9C088120F72975E00675A9C /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = F9C2AC290E7B620900474D97 /* JSONKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9C2AC2B0E7B620900474D97 /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = F9C2AC290E7B620900474D97 /* JSONKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9C2AC2C0E7B620900474D97 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F9C2AC2A0E7B620900474D97 /* JSONKit.m */; };
 		F9C2AC330E7B623E00474D97 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9C2AC320E7B623E00474D97 /* Foundation.framework */; };
@@ -17,6 +19,7 @@
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* JSONKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSONKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9C0880B0F72974900675A9C /* libJSONKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJSONKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9C2AC290E7B620900474D97 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		F9C2AC2A0E7B620900474D97 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		F9C2AC320E7B623E00474D97 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -31,6 +34,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F9C088090F72974900675A9C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				8DC2EF5B0486A6940098B216 /* JSONKit.framework */,
+				F9C0880B0F72974900675A9C /* libJSONKit.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -98,6 +109,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F9C088070F72974900675A9C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9C088120F72975E00675A9C /* JSONKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -120,6 +139,23 @@
 			productReference = 8DC2EF5B0486A6940098B216 /* JSONKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		F9C0880A0F72974900675A9C /* JSONKit (Static:iPhone) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F9C088170F72977C00675A9C /* Build configuration list for PBXNativeTarget "JSONKit (Static:iPhone)" */;
+			buildPhases = (
+				F9C088070F72974900675A9C /* Headers */,
+				F9C088080F72974900675A9C /* Sources */,
+				F9C088090F72974900675A9C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JSONKit (Static:iPhone)";
+			productName = JSONKitS;
+			productReference = F9C0880B0F72974900675A9C /* libJSONKit.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -134,6 +170,7 @@
 			projectRoot = "";
 			targets = (
 				8DC2EF4F0486A6940098B216 /* JSONKit */,
+				F9C0880A0F72974900675A9C /* JSONKit (Static:iPhone) */,
 			);
 		};
 /* End PBXProject section */
@@ -155,6 +192,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				F9C2AC2C0E7B620900474D97 /* JSONKit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9C088080F72974900675A9C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9C088110F72975D00675A9C /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,6 +288,39 @@
 			};
 			name = Release;
 		};
+		F9C0880C0F72974900675A9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = JSONKit;
+				SDKROOT = iphoneos2.2.1;
+			};
+			name = Debug;
+		};
+		F9C0880D0F72974900675A9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_VERSION = "";
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				PRODUCT_NAME = JSONKit;
+				SDKROOT = iphoneos2.2.1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -260,6 +338,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F9C088170F72977C00675A9C /* Build configuration list for PBXNativeTarget "JSONKit (Static:iPhone)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9C0880C0F72974900675A9C /* Debug */,
+				F9C0880D0F72974900675A9C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
