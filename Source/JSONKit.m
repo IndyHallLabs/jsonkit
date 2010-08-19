@@ -343,7 +343,7 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
             if ('.' == c || 'e' == c || 'E' == c) {
                 double d = l;
                 if ('.' == c) {
-                    double f = 0.1;
+                    double f = 1.0;
                     l = 0;
                     digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
                     while (digit >= 0 && digit <= 9) {
