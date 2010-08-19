@@ -325,8 +325,8 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
         case '-':
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9': {
-            int digit = c - '0';
-            int neg = '-' == c;
+            uint32_t digit = c - '0';
+            uint32_t neg = '-' == c;
             if (neg) {
                 digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
                 if (digit < 0 || digit > 9) {
@@ -334,7 +334,7 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                     [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
                 }
             }
-            long l = neg ? -digit : digit;
+            int64_t l = digit;
             digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
             while (digit >= 0 && digit <= 9) {
                 l = l * 10 + digit;
@@ -344,12 +344,14 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 double d = l;
                 if ('.' == c) {
                     double f = 0.1;
+                    l = 0;
                     digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
                     while (digit >= 0 && digit <= 9) {
-                        d += f * digit;
+                        l = l * 10 + digit;
                         f /= 10;
                         digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
                     }
+                    d += (f * l);
                 }
                 if ('e' == c || 'E' == c) {
                     c = CFStringGetCharacterAtIndex(json, i++);
@@ -370,8 +372,14 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                     }
                     d = d * pow(10, eneg ? -e : e);
                 }
+                if (neg) {
+                    d = -d;
+                }
                 object && (*object = CFNumberCreate(NULL, kCFNumberDoubleType , &d));
             } else {
+                if (neg) {
+                    l = -l;
+                }
                 object && (*object = CFNumberCreate(NULL, kCFNumberLongType , &l));
             }
             *jsonIndex = i - 1;
