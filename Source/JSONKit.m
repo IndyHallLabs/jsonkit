@@ -30,7 +30,7 @@
 
 typedef struct {
     CFMutableDataRef data;
-    int flag;
+    CFIndex flag;
 } DataAndFlag;
 
 static void appendStringToData(CFTypeRef object, CFMutableDataRef data);
@@ -42,7 +42,7 @@ static void appendObjectToData(CFTypeRef object, CFMutableDataRef data);
 void appendStringToData(CFTypeRef string, CFMutableDataRef data)
 {
     CFDataAppendBytes(data, (uint8_t*)&"\"", 1);
-    int count = CFStringGetLength(string);
+    CFIndex count = CFStringGetLength(string);
     int i;
     for (i = 0; i < count; i++) {
         UniChar c = CFStringGetCharacterAtIndex(string, i);
@@ -118,7 +118,7 @@ void appendObjectToData(CFTypeRef object, CFMutableDataRef data)
             CFDictionaryGetCount(object)
         };
         CFDataAppendBytes(data, (uint8_t*)&"[", 1);
-        int count = CFArrayGetCount(object);
+        CFIndex count = CFArrayGetCount(object);
         if (count) {
             CFArrayApplyFunction(object, CFRangeMake(0, count), (CFArrayApplierFunction)&appendArrayElementToData, &dataAndFlag);
         }
@@ -144,7 +144,7 @@ void appendObjectToData(CFTypeRef object, CFMutableDataRef data)
     } else if (CFStringGetTypeID() == type) {
         appendStringToData(object, data);
     } else {
-        [NSException raise:NSInvalidArgumentException format:@"Unsupported object-type encountered (%@).  Supported types are: NSArray, NSDictionary, NSNumber, NSNull and NSString.", [(id)CFCopyTypeIDDescription(type) autorelease]];
+        [NSException raise:NSInvalidArgumentException format:@"Unsupported object-type encountered (%@).  Supported types are: NSArray, NSDictionary, NSNumber, NSNull and NSString.", (__bridge_transfer NSString*)CFCopyTypeIDDescription(type)];
     }
 }
 
@@ -153,8 +153,8 @@ void appendObjectToData(CFTypeRef object, CFMutableDataRef data)
 + (id) dataWithObjectAsJSON:(id)object
 {
     CFMutableDataRef data = CFDataCreateMutable(NULL, 0);
-    appendObjectToData(object, data);
-    return [(id)data autorelease];
+    appendObjectToData((__bridge CFTypeRef)object, data);
+    return CFBridgingRelease(data);
 }
 
 @end
@@ -163,20 +163,25 @@ void appendObjectToData(CFTypeRef object, CFMutableDataRef data)
 
 + (id) stringWithObjectAsJSON:(id)object
 {
+    NSString* result = nil;
     CFMutableDataRef data = CFDataCreateMutable(NULL, 0);
-    appendObjectToData(object, data);
-    return [[[NSString alloc] initWithData:[(id)data autorelease] encoding:NSUTF8StringEncoding] autorelease];
+    if (data) {
+        appendObjectToData((__bridge CFTypeRef)object, data);
+        result = [[NSString alloc] initWithData:(__bridge NSData*)data encoding:NSUTF8StringEncoding];
+        CFRelease(data);
+    }
+    return result;
 }
 
 @end
 
 #pragma mark Decoding
  
-static int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* object);
-static CFArrayRef parseRestOfArray(CFStringRef json, int jsonLength, int* jsonIndex);
-static CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jsonIndex);
+static NSInteger nextToken(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex, CFTypeRef* object);
+static CFArrayRef createArrayByParsingJSON(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex);
+static CFDictionaryRef createDictionaryByParsingJSON(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex);
 
-typedef enum {
+enum {
     T_EOF,
     /**/
     T_COLON,
@@ -190,11 +195,11 @@ typedef enum {
     T_TRUE,
     T_FALSE,
     T_NULL,
-} token_t;
+};
 
-int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* object)
+NSInteger nextToken(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex, CFTypeRef* object)
 {
-    int i = *jsonIndex;
+    CFIndex i = *jsonIndex;
     if (jsonLength <= i) {
         return T_EOF;
     }
@@ -329,14 +334,14 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
             uint32_t neg = '-' == c;
             if (neg) {
                 digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
-                if (digit < 0 || digit > 9) {
+                if (digit > 9) {
                     *jsonIndex = i;
                     [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
                 }
             }
-            int64_t l = digit;
+            uint64_t l = digit;
             digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
-            while (digit >= 0 && digit <= 9) {
+            while (digit <= 9) {
                 l = l * 10 + digit;
                 digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
             }
@@ -346,7 +351,7 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                     double f = 1.0;
                     l = 0;
                     digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
-                    while (digit >= 0 && digit <= 9) {
+                    while (digit <= 9) {
                         l = l * 10 + digit;
                         f /= 10;
                         digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
@@ -360,13 +365,13 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                         c = CFStringGetCharacterAtIndex(json, i++);
                     }
                     digit = c - '0';
-                    if (digit < 0 || digit > 9) {
+                    if (digit > 9) {
                         *jsonIndex = i;
                         [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
                     }
                     int e = digit;
                     digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
-                    while (digit >= 0 && digit <= 9) {
+                    while (digit <= 9) {
                         e = e * 10 + digit; 
                         digit = (c = CFStringGetCharacterAtIndex(json, i++)) - '0';
                     }
@@ -375,12 +380,16 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 if (neg) {
                     d = -d;
                 }
-                object && (*object = CFNumberCreate(NULL, kCFNumberDoubleType , &d));
+                if (object) {
+                    *object = CFNumberCreate(NULL, kCFNumberDoubleType, &d);
+                }
             } else {
                 if (neg) {
                     l = -l;
                 }
-                object && (*object = CFNumberCreate(NULL, kCFNumberLongType , &l));
+                if (object) {
+                    *object = CFNumberCreate(NULL, kCFNumberLongLongType, &l);
+                }
             }
             *jsonIndex = i - 1;
             return T_NUMBER;
@@ -394,7 +403,9 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
             }
             *jsonIndex = i;
-            object && (*object = kCFBooleanTrue);
+            if (object) {
+                *object = kCFBooleanTrue;
+            }
             return T_TRUE;
         }
         
@@ -406,7 +417,9 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
             }
             *jsonIndex = i;
-            object && (*object = kCFBooleanFalse);
+            if (object) {
+                *object = kCFBooleanFalse;
+            }
             return T_FALSE;
         }
         
@@ -418,7 +431,9 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
                 [NSException raise:NSParseErrorException format:@"%s(%d)", __FILE__, __LINE__];
             }
             *jsonIndex = i;
-            object && (*object = kCFNull);
+            if (object) {
+                *object = kCFNull;
+            }
             return T_NULL;
         }
     }
@@ -428,21 +443,21 @@ int nextToken(CFStringRef json, int jsonLength, int* jsonIndex, CFTypeRef* objec
     return T_EOF;
 }
 
-CFArrayRef parseRestOfArray(CFStringRef json, int jsonLength, int* jsonIndex)
+CFArrayRef createArrayByParsingJSON(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex)
 {
-    token_t token;
-    CFTypeRef object;
+    NSUInteger token;
+    CFTypeRef object = NULL;
     CFMutableArrayRef array = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
     if (T_RBRACKET != (token = nextToken(json, jsonLength, jsonIndex, &object))) {
         do {
             switch (token) {
                 case T_LBRACE: {
-                    object = parseRestOfDictionary(json, jsonLength, jsonIndex);
+                    object = createDictionaryByParsingJSON(json, jsonLength, jsonIndex);
                     break;
                 }
 
                 case T_LBRACKET: {
-                    object = parseRestOfArray(json, jsonLength, jsonIndex);
+                    object = createArrayByParsingJSON(json, jsonLength, jsonIndex);
                     break;
                 }
                 
@@ -474,11 +489,11 @@ CFArrayRef parseRestOfArray(CFStringRef json, int jsonLength, int* jsonIndex)
     return array;
 }
 
-CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jsonIndex)
+CFDictionaryRef createDictionaryByParsingJSON(CFStringRef json, CFIndex jsonLength, CFIndex* jsonIndex)
 {
     CFMutableDictionaryRef dictionary = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     CFTypeRef key;
-    token_t token;
+    NSUInteger token;
     while (T_RBRACE != (token = nextToken(json, jsonLength, jsonIndex, &key))) {
         if (T_STRING != token) {
             [NSException raise:NSParseErrorException format:@"String/Key expected"];
@@ -489,12 +504,12 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
         CFTypeRef object;
         switch (token = nextToken(json, jsonLength, jsonIndex, &object)) {
             case T_LBRACE: {
-                object = parseRestOfDictionary(json, jsonLength, jsonIndex);
+                object = createDictionaryByParsingJSON(json, jsonLength, jsonIndex);
                 break;
             }
 
             case T_LBRACKET: {
-                object = parseRestOfArray(json, jsonLength, jsonIndex);
+                object = createArrayByParsingJSON(json, jsonLength, jsonIndex);
                 break;
             }
             
@@ -528,12 +543,12 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
 
 + (id) dictionaryWithJSON:(NSString*)json;
 {
-    int jsonLength = [json length];
-    int jsonIndex = 0;
-    if (T_LBRACE != nextToken((CFStringRef)json, jsonLength, &jsonIndex, NULL)) {
+    CFIndex jsonLength = [json length];
+    CFIndex jsonIndex = 0;
+    if (T_LBRACE != nextToken((__bridge CFStringRef)json, jsonLength, &jsonIndex, NULL)) {
         return nil;
     }
-    return [(NSDictionary*)parseRestOfDictionary((CFStringRef)json, jsonLength, &jsonIndex) autorelease];
+    return CFBridgingRelease(createDictionaryByParsingJSON((__bridge CFStringRef)json, jsonLength, &jsonIndex));
 }
 
 @end
@@ -542,12 +557,12 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
 
 + (id) arrayWithJSON:(NSString*)json
 {
-    int jsonLength = [json length];
-    int jsonIndex = 0;
-    if (T_LBRACKET != nextToken((CFStringRef)json, jsonLength, &jsonIndex, NULL)) {
+    CFIndex jsonLength = [json length];
+    CFIndex jsonIndex = 0;
+    if (T_LBRACKET != nextToken((__bridge CFStringRef)json, jsonLength, &jsonIndex, NULL)) {
         return nil;
     }
-    return [(NSArray*)parseRestOfArray((CFStringRef)json, jsonLength, &jsonIndex) autorelease];
+    return CFBridgingRelease(createArrayByParsingJSON((__bridge CFStringRef)json, jsonLength, &jsonIndex));
 }
 
 @end
@@ -556,18 +571,18 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
 
 + (id) objectWithJSON:(NSString*)json
 {
-    int jsonLength = [json length];
-    int jsonIndex = 0;
-    CFTypeRef object;
-    token_t token = nextToken((CFStringRef)json, jsonLength, &jsonIndex, &object);
+    CFIndex jsonLength = [json length];
+    CFIndex jsonIndex = 0;
+    CFTypeRef object = NULL;
+    NSUInteger token = nextToken((__bridge CFStringRef)json, jsonLength, &jsonIndex, &object);
     switch (token) {
         case T_LBRACE: {
-            object = parseRestOfDictionary((CFStringRef)json, jsonLength, &jsonIndex);
+            object = createDictionaryByParsingJSON((__bridge CFStringRef)json, jsonLength, &jsonIndex);
             break;
         }
 
         case T_LBRACKET: {
-            object = parseRestOfArray((CFStringRef)json, jsonLength, &jsonIndex);
+            object = createArrayByParsingJSON((__bridge CFStringRef)json, jsonLength, &jsonIndex);
             break;
         }
         
@@ -577,7 +592,7 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
         case T_NUMBER:
         case T_STRING: {
             /* nothing to do */
-            break;
+            return nil;
         }
         
         default: {
@@ -587,7 +602,7 @@ CFDictionaryRef parseRestOfDictionary(CFStringRef json, int jsonLength, int* jso
             return nil;
         }
     }
-    return [(id)object autorelease];
+    return CFBridgingRelease(object);
 }
 
 @end

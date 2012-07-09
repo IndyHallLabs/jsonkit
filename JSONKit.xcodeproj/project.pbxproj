@@ -8,9 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		F90C756415AB4260002DA0E4 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F9C2AC2A0E7B620900474D97 /* JSONKit.m */; };
+		F90C756615AB4263002DA0E4 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F9C2AC2A0E7B620900474D97 /* JSONKit.m */; };
 		F972973115AB3ABF006144AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F972972115AB3AAC006144AD /* Foundation.framework */; };
 		F972973B15AB3B1C006144AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F972972115AB3AAC006144AD /* Foundation.framework */; };
 		F972974215AB3B8D006144AD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F972974115AB3B8D006144AD /* Cocoa.framework */; };
+		F972976515AB413E006144AD /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = F9C2AC290E7B620900474D97 /* JSONKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F972976715AB4141006144AD /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = F9C2AC290E7B620900474D97 /* JSONKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9C2AC2B0E7B620900474D97 /* JSONKit.h in Headers */ = {isa = PBXBuildFile; fileRef = F9C2AC290E7B620900474D97 /* JSONKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9C2AC2C0E7B620900474D97 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F9C2AC2A0E7B620900474D97 /* JSONKit.m */; };
 /* End PBXBuildFile section */
@@ -132,6 +136,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F972976515AB413E006144AD /* JSONKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +144,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F972976715AB4141006144AD /* JSONKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F90C756415AB4260002DA0E4 /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -253,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F90C756615AB4263002DA0E4 /* JSONKit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,6 +281,7 @@
 		1DEB91AE08733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -288,6 +297,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -301,6 +311,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Debug;
@@ -308,6 +319,7 @@
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 			};
 			name = Release;
@@ -426,6 +438,7 @@
 				F972973A15AB3ABF006144AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F972974D15AB3B8D006144AD /* Build configuration list for PBXNativeTarget "JSONKit-Mac" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +447,7 @@
 				F972974F15AB3B8D006144AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
