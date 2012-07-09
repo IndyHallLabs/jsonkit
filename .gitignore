@@ -1,4 +1,7 @@
 [bB]uild
-._DS_Store
-*.pbxuser
+.DS_Store
 *.perspectivev3
+*.pbxuser
+*.mode1v3
+xcuserdata
+project.xcworkspace
