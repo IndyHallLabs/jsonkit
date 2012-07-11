@@ -312,17 +312,23 @@
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEPLOYMENT_LOCATION = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "\"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -345,9 +351,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = JSONKit;
-				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/JSONKit;
+				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -364,9 +369,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = JSONKit;
-				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/JSONKit;
+				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -390,7 +394,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				PRODUCT_NAME = JSONKit;
-				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/JSONKit;
+				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 			};
 			name = Debug;
 		};
@@ -408,7 +412,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				PRODUCT_NAME = JSONKit;
-				PUBLIC_HEADERS_FOLDER_PATH = /usr/local/include/JSONKit;
+				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 			};
 			name = Release;
 		};
