@@ -393,6 +393,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				OTHER_CFLAGS = "-fobjc-nonfragile-abi";
 				PRODUCT_NAME = JSONKit;
 				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 			};
@@ -411,6 +412,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				OTHER_CFLAGS = "-fobjc-nonfragile-abi";
 				PRODUCT_NAME = JSONKit;
 				PUBLIC_HEADERS_FOLDER_PATH = include/JSONKit;
 			};
